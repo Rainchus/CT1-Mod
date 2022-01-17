@@ -1,14 +1,14 @@
 #include "../include/ct1.h"
 
-//printText(s32 10, s32 0xFF, f32 a2, f32 1.0, f32 0, f32 0, char* text, s32 1);
-
-
-
 char text[] = "test message";
 char convertedText[sizeof(text)];
 char testWithTextInFormat[] = "\xA3\xD4\xA3\xC5\xA3\xD3\xA3\xD4"; //TEST
 
 //void printText(f32 xPos, f32 yPos, f32 zero, f32 scale, char* text, s32);
+
+char* convertAsciiToText(char* message) {
+
+}
 
 void printTestMessage() {
     f32 xPos = 72.0f;
