@@ -142,23 +142,21 @@ void testTextFormatWithPrintf(void) {
 
     if (p1ChameleonInstance != NULL) {
         formatText(0, 0, "XPos: %.4f\n", p1ChameleonInstance->xPos);
-        convertAsciiToText(&textBuffer2, (char*)&textBuffer); //returns output to textBuffer at 0x807FE000
+        convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
 
         yPos += 10.0f;
 
         formatText(0, 0, "YPos: %.4f\n", p1ChameleonInstance->yPos);
-        convertAsciiToText(&textBuffer2, (char*)&textBuffer); //returns output to textBuffer at 0x807FE000
+        convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
 
         yPos += 10.0f;
 
         formatText(0, 0, "ZPos: %.4f\n", p1ChameleonInstance->zPos);
-        convertAsciiToText(&textBuffer2, (char*)&textBuffer); //returns output to textBuffer at 0x807FE000
+        convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
     }
-
-    
 }
 
 void mainCFunction(void) {
