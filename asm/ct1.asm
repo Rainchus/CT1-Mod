@@ -2,9 +2,28 @@
 .definelabel func_800a06c0, 0x800a06c0
 .definelabel dma_copy, 0x800809A0
 .definelabel printText, 0x8007C8A4
-.definelabel strlen, 0x800E503C
-.definelabel strchr, 0x800E5064
+.definelabel ct_strlen, 0x800E503C
+.definelabel ct_strchr, 0x800E5064
+.definelabel ct_memcpy, 0x800E5010
 
+//data
+.definelabel p1ChameleonInstance, 0x80182A98
+.definelabel cameraPtr, 0x801806E8
+.definelabel p1PressedButtons, 0x80181484
+.definelabel p1HeldButtons, 0x80181450
+.definelabel collisionJALOpcodeAddress, 0x800C97CC
+.definelabel collisionJALOpcodeHex, 0x0C0309D7
+
+//custom data
+.definelabel textBuffer, 0x807FE000 //buffer size of 0x2000
+.definelabel cameraInstanceCopy, 0x807FDF90
+.definelabel p1ChameleonStoredX, 0x807FDFEC
+.definelabel p1ChameleonStoredY, 0x807FDFF0
+.definelabel p1ChameleonStoredZ, 0x807FDFF4
+.definelabel dpadTimer, 0x807FDFF8
+.definelabel noClipBool, 0x807FDFFC
+
+//Payload related information
 .definelabel PAYLOAD_START_ROM, 0xB92000
 .definelabel PAYLOAD_START_RAM, 0x80400000
 .definelabel CT_MOD_ROM, PAYLOAD_START_ROM + 0x1000
@@ -49,6 +68,12 @@ LI t1, mainASMFunctionJump
 LW t1, 0x0000 (t1) //load jump instruction
 SW t1, 0x0000 (t0) //store hook
 SW r0, 0x0004 (t0) //store NOP after hook
+//clear custom variables
+LUI at, hi(noClipBool)
+SW r0, lo(noClipBool) (at)
+LUI at, hi(dpadTimer)
+SW r0, lo(dpadTimer) (at)
+//
 LUI at, 0x800F
 J 0x8008A84C
 SW r0, 0x68DC (at)
@@ -68,6 +93,10 @@ NOP
 
 .headersize CT_MOD_RAM - CT_MOD_ROM
 .org CT_MOD_RAM
+.include "asm/printf.asm" // Include ct1.asm to tell armips' linker where to find the game's function(s)
+.align 4
 .importobj "obj/ct1.o"
+
+
 
 PAYLOAD_END:
