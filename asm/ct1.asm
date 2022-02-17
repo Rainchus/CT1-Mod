@@ -6,9 +6,16 @@
 .definelabel ct_strlen, 0x800E503C
 .definelabel ct_strchr, 0x800E5064
 .definelabel ct_memcpy, 0x800E5010
+.definelabel osContGetReadData, 0x800D4A24
+.definelabel osContStartReadData, 0x800D4960
+.definelabel gameMode, 0x800F68D8
+.definelabel subGameMode, 0x800F68DC
 
 //data
+.definelabel osCountCopy, 0x800F7044
 .definelabel p1ChameleonInstance, 0x80182A98
+.definelabel p1OSContStatus, 0x80254E50
+.definelabel p1OSContPad, 0x80254E54
 .definelabel cameraPtr, 0x801806E8
 .definelabel p1PressedButtons, 0x80181484
 .definelabel p1HeldButtons, 0x80181450
@@ -18,7 +25,12 @@
 //custom data
 .definelabel textBuffer, 0x807FE000 //buffer size of 0x1000
 .definelabel textBuffer2, 0x807FF000 //buffer size of 0x1000
-.definelabel cameraInstanceCopy, 0x807FDF90
+//.definelabel cameraInstanceCopy, 0x807FDF90
+.definelabel controller1PreviousHeldButtons, 0x807FDFDC
+.definelabel controller1CurrentHeldButtons, 0x807FDFDE
+.definelabel controller1PressedButtons, 0x807FDFE0
+.definelabel gameModeCopy, 0x807FDFE4
+.definelabel stepValue, 0x807FDFE8
 .definelabel p1ChameleonStoredX, 0x807FDFEC
 .definelabel p1ChameleonStoredY, 0x807FDFF0
 .definelabel p1ChameleonStoredZ, 0x807FDFF4
@@ -48,6 +60,10 @@ ADDIU a2, a2, lo(PAYLOAD_SIZE)
 J originalCode
 NOP
 
+.org 0x8008AA20
+LUI a0, 0x8012 //restore instruction from hook
+JAL stepInvalidGameMode
+ADDIU a0, a0, 0x81FC //restore instruction from hook
 
 //.headersize 0x7F86E000 // Set the displacement between ROM and RAM addresses (0xB92000)
 .headersize (PAYLOAD_START_RAM - PAYLOAD_START_ROM)

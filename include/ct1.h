@@ -16,7 +16,13 @@ typedef struct playerActor {
 	/* 0x04 */ f32 xPos;
 	/* 0x08 */ f32 yPos;
 	/* 0x0C */ f32 zPos;
-    /* 0x10 */ char unk_10[0xB8];
+    /* 0x10 */ char unk_10[0x14];
+    /* 0x24 */ f32 xSpeed;
+    /* 0x28 */ f32 ySpeed;
+    /* 0x2C */ f32 zSpeed;
+    /* 0x30 */ char unk_30[0x0C];
+    /* 0x3C */ f32 yAngle;
+    /* 0x40 */ char unk_40[0x88];
 	/* 0xC8 */ s32 hp;
 } playerActor;
 
@@ -43,6 +49,22 @@ typedef struct camera {
     /* 0x4C */ f32 unk_4C;
 } camera; //sizeof 0x50 (?)
 
+typedef struct OSContStatus {
+    u16 type;
+    u8 status;
+    u8 errno;
+} OSContStatus;
+
+typedef struct OSContPad {
+    u16 button;
+    s8 stick_x;
+    s8 stick_y;
+    u8 errno;
+} OSContPad;
+
+extern OSContStatus p1OSContStatus;
+extern OSContPad p1OSContPad;
+
 
 extern s32 p1PressedButtons;
 extern s32 p1HeldButtons;
@@ -58,6 +80,18 @@ extern f32 p1ChameleonStoredX;
 extern f32 p1ChameleonStoredY;
 extern f32 p1ChameleonStoredZ;
 
+extern s32 gameMode;
+extern s32 subGameMode;
+extern s32 stepValue;
+extern s32 gameModeCopy;
+
+extern s16 controller1PreviousHeldButtons;
+extern s16 controller1CurrentHeldButtons;
+extern s16 controller1PressedButtons;
+
+void ct_copyInputsToStruct(s32*, s32, s32, s32);
+void osContStartReadData(s32*);
+void osContGetReadData(void);
 s32 func_800A06C0(void* romStart, void* ramStart, s32 size);
 void dma_copy(void* ROMAddr, void* RamAddr, s32 size);
 void printText(f32 xPos, f32 yPos, f32 zero, f32 scale, f32 zero2, f32 zero3, void* text, s32);

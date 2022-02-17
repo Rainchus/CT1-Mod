@@ -156,10 +156,81 @@ void testTextFormatWithPrintf(void) {
         formatText(0, 0, "ZPos: %.4f\n", p1ChameleonInstance->zPos);
         convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
+
+        yPos += 10.0f;
+
+        formatText(0, 0, "Angl: %.4f\n", p1ChameleonInstance->yAngle);
+        convertAsciiToText(&textBuffer2, (char*)&textBuffer);
+        printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
+
+        
+
+        yPos = 200.0f;
+
+        formatText(0, 0, "XSpd: %.4f\n", p1ChameleonInstance->xSpeed);
+        convertAsciiToText(&textBuffer2, (char*)&textBuffer);
+        printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
+
+        yPos += 10.0f;
+
+        formatText(0, 0, "YSpd: %.4f\n", p1ChameleonInstance->ySpeed);
+        convertAsciiToText(&textBuffer2, (char*)&textBuffer);
+        printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
+
+        yPos += 10.0f;
+
+        formatText(0, 0, "ZSpd: %.4f\n", p1ChameleonInstance->zSpeed);
+        convertAsciiToText(&textBuffer2, (char*)&textBuffer);
+        printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
     }
 }
 
-void mainCFunction(void) {
+void updatePressedButtons() {
+
+}
+
+
+void stepInvalidGameMode(void) { //any invalid game, however we will use 0x16 (0x8008AA24)
+    s16 buttonsTemp;
+
+    osContStartReadData((s32*)0x80181420); //copy controller data to osCont struct
+    controller1PreviousHeldButtons = controller1CurrentHeldButtons;
+    controller1CurrentHeldButtons = p1OSContPad.button;
+    buttonsTemp = controller1CurrentHeldButtons & controller1PreviousHeldButtons;
+    controller1PressedButtons = buttonsTemp ^ controller1CurrentHeldButtons;
+
+    if (controller1PressedButtons & 0x0800) { //dpad up pressed
+        stepValue = 1;
+    } else if (controller1PressedButtons & 0x0400) { //dpad down pressed
+        stepValue = 0;
+        gameMode = gameModeCopy;
+    }
+}
+
+void saveStateTest(void) {
+    if (controller1CurrentHeldButtons & 0x02000000) { //dpad right
+        ct_memcpy((void*)0x80410000, (void*)0x800E7230, 0x328DD0); //copy ram to expansion pak ram
+    } else if (controller1CurrentHeldButtons & 0x01000000) { //dpad left
+        ct_memcpy((void*)0x800E7230, (void*)0x80410000, 0x328DD0); //copy saved ram back to normal ram space
+    }
+}
+
+void frameAdvanceMain(void) {
+    if (p1PressedButtons & 0x01000000) { //dpad right to start
+        p1PressedButtons = 0;
+        gameModeCopy = gameMode;
+        gameMode = 0x16; //set invalid gamemode
+    } else if (stepValue == 2) { //waiting on frame advance mode
+        gameMode = 0x16;
+    } else if (stepValue == 1) { //advance a frame
+        gameMode = gameModeCopy;
+        stepValue = 2;
+    }
+}
+
+void mainCFunction(void) { //right before running current game mode
+    frameAdvanceMain();
     //toggleNoClip();
     testTextFormatWithPrintf();
+    //saveStateTest();
 }
