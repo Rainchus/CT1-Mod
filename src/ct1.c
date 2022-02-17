@@ -133,7 +133,7 @@ void printTestMessage() {
 
 void testTextFormatWithPrintf(void) {
     f32 xPos = 20.0f;
-    f32 yPos = 20.0f;
+    f32 yPos = 35.0f;
     s32 arga2 = 0.0f;
     f32 scale = 0.5f;
     f32 arga4 = 0.0f;
