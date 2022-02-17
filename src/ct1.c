@@ -2,21 +2,34 @@
 
 char text[] = "test message";
 char convertedText[sizeof(text)];
-char testWithTextInFormat[] = "TEST"; //TEST
+char testWithTextInFormat[] = "sound mode"; //TEST
+
+char testDecimalText[] = "sound mode.";
 
 f32 noClipMoveScalor = 25.0f;
 
 
 //void printText(f32 xPos, f32 yPos, f32 zero, f32 scale, char* text, s32);
 
-void convertAsciiToText(char* source, void* textBuffer) {
-    u16* buffer = (u16*)textBuffer;
+void convertAsciiToText(void* buffer, char* source) {
+    u16* buf = (u16*)buffer;
     s32 strlength = ct_strlen(source);
 
     for (s32 i = 0; i < strlength; i++) {
-        if ( (source[i] > '0' && source[i] <= '9') ||
-            (source[i] > 'A' && source[i] <= 'Z')) { //is 0 - 9 or A - Z
-            buffer[i] = source[i] + 0xA380; //0x30 = 0 in ascii, 0xA3B0 = 0 in chameleon text
+        if ( (source[i] >= '0' && source[i] <= '9') ||
+            (source[i] >= 'A' && source[i] <= 'Z')) { //is 0 - 9 or A - Z
+            buf[i] = source[i] + 0xA380; //0x30 = 0 in ascii, 0xA3B0 = 0 in chameleon text
+        } else if ( (source[i] > '0' && source[i] <= '9') ||
+            (source[i] >= 'a' && source[i] <= 'z')) { //is 0 - 9 or A - Z
+            buf[i] = source[i] + 0xA360; //0x30 = 0 in ascii, 0xA3B0 = 0 in chameleon text
+        } else if(source[i] == '-') {
+            buf[i] = 0xADA5; // '-' in chameleon text
+        } else if (source[i] == '.') {
+            buf[i] = 0xADA3; // '.' in chameleon text
+        } else if (source[i] == ':') {
+            buf[i] = 0xA1A7; // ':' in chameleon text
+        } else if (source[i] == ' ') {
+            buf[i] = 0xA1A1; // ' ' in chameleon text
         }
     }
 }
@@ -106,12 +119,6 @@ void formatText(s32 x, s32 y, char* fmt, ...) {
     va_end(args);
 }
 
-void testTextFormatWithPrintf(void) {
-    if (p1ChameleonInstance != NULL) {
-        formatText(0, 0, "XPos: %.8f\nYPos: %.8f\nZPos: %.8f", p1ChameleonInstance->xPos, p1ChameleonInstance->yPos, p1ChameleonInstance->zPos);
-    }
-}
-
 void printTestMessage() {
     f32 xPos = 72.0f;
     f32 yPos = 72.0f;
@@ -120,11 +127,41 @@ void printTestMessage() {
     f32 arga4 = 0.0f;
     f32 arga5 = 0.0f;
     s32 style = 1;
-    convertAsciiToText(testWithTextInFormat, &textBuffer); //returns output to textBuffer at 0x807FE000
-    printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer, style);
+    convertAsciiToText(&textBuffer2, (char*)textBuffer); //returns output to textBuffer at 0x807FE000
+    printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
+}
+
+void testTextFormatWithPrintf(void) {
+    f32 xPos = 20.0f;
+    f32 yPos = 20.0f;
+    s32 arga2 = 0.0f;
+    f32 scale = 0.5f;
+    f32 arga4 = 0.0f;
+    f32 arga5 = 0.0f;
+    s32 style = 3;
+
+    if (p1ChameleonInstance != NULL) {
+        formatText(0, 0, "XPos: %.4f\n", p1ChameleonInstance->xPos);
+        convertAsciiToText(&textBuffer2, (char*)&textBuffer); //returns output to textBuffer at 0x807FE000
+        printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
+
+        yPos += 10.0f;
+
+        formatText(0, 0, "YPos: %.4f\n", p1ChameleonInstance->yPos);
+        convertAsciiToText(&textBuffer2, (char*)&textBuffer); //returns output to textBuffer at 0x807FE000
+        printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
+
+        yPos += 10.0f;
+
+        formatText(0, 0, "ZPos: %.4f\n", p1ChameleonInstance->zPos);
+        convertAsciiToText(&textBuffer2, (char*)&textBuffer); //returns output to textBuffer at 0x807FE000
+        printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
+    }
+
+    
 }
 
 void mainCFunction(void) {
-    toggleNoClip();
+    //toggleNoClip();
     testTextFormatWithPrintf();
 }

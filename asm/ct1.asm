@@ -2,6 +2,7 @@
 .definelabel func_800a06c0, 0x800a06c0
 .definelabel dma_copy, 0x800809A0
 .definelabel printText, 0x8007C8A4
+.definelabel printText2, 0x8007C864
 .definelabel ct_strlen, 0x800E503C
 .definelabel ct_strchr, 0x800E5064
 .definelabel ct_memcpy, 0x800E5010
@@ -15,7 +16,8 @@
 .definelabel collisionJALOpcodeHex, 0x0C0309D7
 
 //custom data
-.definelabel textBuffer, 0x807FE000 //buffer size of 0x2000
+.definelabel textBuffer, 0x807FE000 //buffer size of 0x1000
+.definelabel textBuffer2, 0x807FF000 //buffer size of 0x1000
 .definelabel cameraInstanceCopy, 0x807FDF90
 .definelabel p1ChameleonStoredX, 0x807FDFEC
 .definelabel p1ChameleonStoredY, 0x807FDFF0

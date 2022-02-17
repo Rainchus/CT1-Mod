@@ -61,9 +61,11 @@ extern f32 p1ChameleonStoredZ;
 s32 func_800A06C0(void* romStart, void* ramStart, s32 size);
 void dma_copy(void* ROMAddr, void* RamAddr, s32 size);
 void printText(f32 xPos, f32 yPos, f32 zero, f32 scale, f32 zero2, f32 zero3, void* text, s32);
+void printText2(f32 xPos, f32 yPos, f32 zero, f32 scale, f32 zero2, f32 zero3, void* text, s32);
 s32 ct_strlen(void* string);
 void ct_memcpy (void* destination, void* source, s32 size);
-extern void* textBuffer;
+extern char* textBuffer;
+extern void* textBuffer2;
 
 #define va_start(AP,LASTARG) (AP = ((__gnuc_va_list) __builtin_next_arg (LASTARG)))
 typedef void *__gnuc_va_list;
