@@ -8,9 +8,6 @@ char testDecimalText[] = "sound mode.";
 
 f32 noClipMoveScalor = 25.0f;
 
-
-//void printText(f32 xPos, f32 yPos, f32 zero, f32 scale, char* text, s32);
-
 void convertAsciiToText(void* buffer, char* source) {
     u16* buf = (u16*)buffer;
     s32 strlength = ct_strlen(source);
@@ -131,7 +128,7 @@ void printTestMessage() {
     printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
 }
 
-void testTextFormatWithPrintf(void) {
+void printPositionAngleSpd(void) {
     f32 xPos = 20.0f;
     f32 yPos = 35.0f;
     s32 arga2 = 0.0f;
@@ -142,53 +139,54 @@ void testTextFormatWithPrintf(void) {
 
     if (p1ChameleonInstance != NULL) {
         formatText(0, 0, "XPos: %.4f\n", p1ChameleonInstance->xPos);
+        _bzero(&textBuffer2, 50); //clear 50 bytes of buffer
         convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
 
         yPos += 10.0f;
 
         formatText(0, 0, "YPos: %.4f\n", p1ChameleonInstance->yPos);
+        _bzero(&textBuffer2, 50); //clear 50 bytes of buffer
         convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
 
         yPos += 10.0f;
 
         formatText(0, 0, "ZPos: %.4f\n", p1ChameleonInstance->zPos);
+        _bzero(&textBuffer2, 50); //clear 50 bytes of buffer
         convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
 
         yPos += 10.0f;
 
         formatText(0, 0, "Angl: %.4f\n", p1ChameleonInstance->yAngle);
+        _bzero(&textBuffer2, 50); //clear 50 bytes of buffer
         convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
 
         
-
         yPos = 200.0f;
 
         formatText(0, 0, "XSpd: %.4f\n", p1ChameleonInstance->xSpeed);
+        _bzero(&textBuffer2, 50); //clear 50 bytes of buffer
         convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
 
         yPos += 10.0f;
 
         formatText(0, 0, "YSpd: %.4f\n", p1ChameleonInstance->ySpeed);
+        _bzero(&textBuffer2, 50); //clear 50 bytes of buffer
         convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
 
         yPos += 10.0f;
 
         formatText(0, 0, "ZSpd: %.4f\n", p1ChameleonInstance->zSpeed);
+        _bzero(&textBuffer2, 50); //clear 50 bytes of buffer
         convertAsciiToText(&textBuffer2, (char*)&textBuffer);
         printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
     }
 }
-
-void updatePressedButtons() {
-
-}
-
 
 void stepInvalidGameMode(void) { //any invalid game, however we will use 0x16 (0x8008AA24)
     s16 buttonsTemp;
@@ -228,9 +226,32 @@ void frameAdvanceMain(void) {
     }
 }
 
+void printRNGTracker(void) {
+    //track current rng seed and rng seed calls
+    f32 xPos = 165.0f;
+    f32 yPos = 200.0f;
+    s32 arga2 = 0.0f;
+    f32 scale = 0.5f;
+    f32 arga4 = 0.0f;
+    f32 arga5 = 0.0f;
+    s32 style = 3;
+    formatText(0, 0, "Seed:  %08X\n", curRngSeedCopy);
+    _bzero(&textBuffer2, 50); //clear 50 bytes of buffer
+    convertAsciiToText(&textBuffer2, (char*)&textBuffer);
+    printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
+
+    yPos += 10.0f;
+
+    formatText(0, 0, "Total: %d\n", rngAdvanceTotal);
+    _bzero(&textBuffer2, 50); //clear 50 bytes of buffer
+    convertAsciiToText(&textBuffer2, (char*)&textBuffer);
+    printText(xPos, yPos, arga2, scale, arga4, arga5, &textBuffer2, style);
+}
+
 void mainCFunction(void) { //right before running current game mode
-    frameAdvanceMain();
-    //toggleNoClip();
-    testTextFormatWithPrintf();
+    //frameAdvanceMain();
+    toggleNoClip();
+    printPositionAngleSpd();
+    printRNGTracker();
     //saveStateTest();
 }

@@ -10,6 +10,8 @@
 .definelabel osContStartReadData, 0x800D4960
 .definelabel gameMode, 0x800F68D8
 .definelabel subGameMode, 0x800F68DC
+.definelabel advanceRNG, 0x80052248
+.definelabel frameCount, 0x800F6118
 
 //data
 .definelabel osCountCopy, 0x800F7044
@@ -21,11 +23,14 @@
 .definelabel p1HeldButtons, 0x80181450
 .definelabel collisionJALOpcodeAddress, 0x800C97CC
 .definelabel collisionJALOpcodeHex, 0x0C0309D7
+.definelabel _bzero, 0x800D94C0
 
 //custom data
 .definelabel textBuffer, 0x807FE000 //buffer size of 0x1000
 .definelabel textBuffer2, 0x807FF000 //buffer size of 0x1000
 //.definelabel cameraInstanceCopy, 0x807FDF90
+.definelabel curRngSeedCopy, 0x807FDFD4
+.definelabel rngAdvanceTotal, 0x807FDFD8
 .definelabel controller1PreviousHeldButtons, 0x807FDFDC
 .definelabel controller1CurrentHeldButtons, 0x807FDFDE
 .definelabel controller1PressedButtons, 0x807FDFE0
@@ -86,11 +91,20 @@ LI t1, mainASMFunctionJump
 LW t1, 0x0000 (t1) //load jump instruction
 SW t1, 0x0000 (t0) //store hook
 SW r0, 0x0004 (t0) //store NOP after hook
+
+LI t0, 0x8005226C
+LI t1, advanceRNGHookInstruction
+LW t1, 0x0000 (t1) //load jump instruction
+SW t1, 0x0000 (t0) //store hook
 //clear custom variables
 LUI at, hi(noClipBool)
 SW r0, lo(noClipBool) (at)
 LUI at, hi(dpadTimer)
 SW r0, lo(dpadTimer) (at)
+LUI at, hi(rngAdvanceTotal)
+SW r0, lo(rngAdvanceTotal) (at)
+LUI at, hi(curRngSeedCopy)
+SW r0, lo(curRngSeedCopy) (at)
 //
 LUI at, 0x800F
 J 0x8008A84C
@@ -100,7 +114,22 @@ mainASMFunctionJump:
 J mainASMFunction //instruction copied and used as a hook
 NOP
 
-.org 0x80400080
+advanceRNGTracker:
+//v0 holds current rng seed
+LI t0, rngAdvanceTotal
+LW t1, 0x0000 (t0) //load total
+ADDIU t1, t1, 1 //increment total
+SW t1, 0x0000 (t0) //store new result
+LI t0, curRngSeedCopy //load pointer to rng seed copy
+SW v0, 0x0000 (t0) //store new rng seed (it's already in v0 due to location of our hook)
+JR RA
+NOP
+
+advanceRNGHookInstruction:
+J advanceRNGTracker
+NOP
+
+.org 0x804000C0
 mainASMFunction:
 JAL mainCFunction
 NOP

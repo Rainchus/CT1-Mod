@@ -49,6 +49,13 @@ typedef struct camera {
     /* 0x4C */ f32 unk_4C;
 } camera; //sizeof 0x50 (?)
 
+
+typedef struct mapRelatedStruct {
+    /* 0x00 */ s32 isDuringRoomTransition;
+
+    /* 0x0C */ s32 roomID;
+} mapRelatedStruct;
+
 typedef struct OSContStatus {
     u16 type;
     u8 status;
@@ -79,6 +86,7 @@ extern s32 dpadTimer;
 extern f32 p1ChameleonStoredX;
 extern f32 p1ChameleonStoredY;
 extern f32 p1ChameleonStoredZ;
+extern s32 frameCount;
 
 extern s32 gameMode;
 extern s32 subGameMode;
@@ -100,6 +108,9 @@ s32 ct_strlen(void* string);
 void ct_memcpy (void* destination, void* source, s32 size);
 extern char* textBuffer;
 extern void* textBuffer2;
+extern u32 curRngSeedCopy;
+extern u32 rngAdvanceTotal;
+extern void _bzero(void* buffer, s32 size);
 
 #define va_start(AP,LASTARG) (AP = ((__gnuc_va_list) __builtin_next_arg (LASTARG)))
 typedef void *__gnuc_va_list;
